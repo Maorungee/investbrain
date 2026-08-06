@@ -12,6 +12,7 @@ use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -108,12 +109,19 @@ return new class extends Migration
                 '--force' => true,
             ]);
 
-            CurrencyRate::timeSeriesRates(
-                Holding::all()->groupBy('market_data.currency')->keys()->toArray(),
-                Transaction::min('date')
-            );
+            try {
 
-            CurrencyRate::refreshCurrencyData();
+                CurrencyRate::timeSeriesRates(
+                    Holding::all()->groupBy('market_data.currency')->keys()->toArray(),
+                    Transaction::min('date')
+                );
+
+                CurrencyRate::refreshCurrencyData();
+
+            } catch (Throwable $e) {
+
+                Log::warning('Could not refresh currency rates during migration: '.$e->getMessage());
+            }
         }
 
         /**
