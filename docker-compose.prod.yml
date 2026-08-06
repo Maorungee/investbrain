@@ -1,0 +1,63 @@
+networks:
+  investbrain-network:
+    driver: bridge
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: investbrain-app
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "${APP_PORT:-8000}:80"
+    environment:
+      APP_URL: "${APP_URL:-http://localhost:8000}"
+      APP_KEY: "${APP_KEY:-}"
+      DB_CONNECTION: pgsql
+      DB_HOST: investbrain-pgsql
+      DB_PORT: 5432
+      DB_DATABASE: "${DB_DATABASE:-investbrain}"
+      DB_USERNAME: "${DB_USERNAME:-investbrain}"
+      DB_PASSWORD: "${DB_PASSWORD:-investbrain}"
+      SESSION_DRIVER: redis
+      QUEUE_CONNECTION: redis
+      CACHE_STORE: redis
+      REDIS_HOST: investbrain-redis
+      REGISTRATION_ENABLED: "${REGISTRATION_ENABLED:-true}"
+      MARKET_DATA_PROVIDER: "${MARKET_DATA_PROVIDER:-yahoo}"
+    volumes:
+      - investbrain-storage:/var/app/storage
+    depends_on:
+      - pgsql
+      - redis
+    networks:
+      - investbrain-network
+  redis:
+    image: redis:alpine
+    container_name: investbrain-redis
+    restart: unless-stopped
+    tty: true
+    command:
+      - --loglevel warning
+    volumes:
+      - investbrain-redis:/data
+    networks:
+      - investbrain-network
+  pgsql:
+    image: postgres:15-alpine
+    container_name: investbrain-pgsql
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-investbrain}
+      POSTGRES_USER: ${DB_USERNAME:-investbrain}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-investbrain}
+    command: postgres -c log_min_messages=error
+    volumes:
+      - investbrain-pgsql:/var/lib/postgresql/data
+    networks:
+      - investbrain-network
+volumes:
+  investbrain-storage:
+  investbrain-redis:
+  investbrain-pgsql:
