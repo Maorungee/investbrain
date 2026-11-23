@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="th">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>ราคาเหมาะสม</title>
+    <meta name="description" content="ประเมินมูลค่าหุ้นรายตัวด้วย DCF สำหรับหุ้นอเมริกาและหุ้นไทย">
+    <meta name="theme-color" content="#16324f">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand"><img src="icons/icon.svg" alt="" width="32" height="32"><span>ราคาเหมาะสม</span></div>
+        <div class="topbar-actions">
+            <span id="offlineBadge" class="pill warn" hidden>ออฟไลน์</span>
+            <button id="installButton" class="button ghost" type="button" hidden>ติดตั้งแอป</button>
+            <button id="savedButton" class="button ghost" type="button">ที่บันทึกไว้ <span id="savedCount" class="count">0</span></button>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <section class="card search" aria-labelledby="searchTitle">
+            <h1 id="searchTitle">หาราคาที่เหมาะสมของหุ้น</h1>
+            <form id="searchForm" class="search-row" autocomplete="off">
+                <div class="segmented" role="radiogroup" aria-label="ตลาด">
+                    <label><input type="radio" name="market" value="US" checked><span>อเมริกา</span></label>
+                    <label><input type="radio" name="market" value="TH"><span>ไทย</span></label>
+                </div>
+                <input id="symbolInput" type="search" inputmode="latin" placeholder="ชื่อย่อหุ้น เช่น AAPL หรือ PTT" aria-label="ชื่อย่อหุ้น" required>
+                <button class="button primary" type="submit">ดึงข้อมูล</button>
+                <button id="manualButton" class="button" type="button">กรอกตัวเลขเอง</button>
+            </form>
+            <ul id="searchResults" class="results" hidden></ul>
+            <p id="searchMessage" class="message" role="status" hidden></p>
+        </section>
+
+        <div id="workspace" class="workspace"></div>
+    </main>
+
+    <dialog id="savedDialog" class="dialog">
+        <div class="dialog-head"><h2>ที่บันทึกไว้</h2><button class="button ghost" type="button" data-close>ปิด</button></div>
+        <ul id="savedList" class="saved-list"></ul>
+    </dialog>
+
+    <footer class="wrap footnote">
+        <p>ผลลัพธ์เป็นค่าประมาณจากสมมติฐานที่คุณตั้ง ไม่ใช่คำแนะนำซื้อขาย โมเดล FCFF ไม่เหมาะกับธนาคาร ประกัน และกองทุนอสังหาริมทรัพย์</p>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
