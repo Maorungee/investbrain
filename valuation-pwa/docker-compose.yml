@@ -1,0 +1,11 @@
+# Runs the valuation app on host port 3010. Put a reverse proxy with HTTPS in front of it;
+# browsers only install a PWA and run its offline cache over HTTPS.
+services:
+  valuation:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3010:3000"
+    environment:
+      PORT: "3000"
+      DATA_PROVIDER: tradingview
